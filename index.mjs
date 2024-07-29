@@ -82,8 +82,14 @@ else {
         secretToken: env.WEBHOOK_SECRET_TOKEN
     })
     const server = createServer(async (req, res) => {
-        if (req.url.endsWith("/status")) return res.writeHead(200, "ok").end()
-        return await callback(req, res)
+        if (req.method === "POST") {
+            try {
+                return await callback(req, res)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        return res.writeHead(200, "ok").end()
     })
     server.listen(parseInt(env.PORT || 8443), "0.0.0.0", async () => 
         onStart(await bot.api.getMe())
