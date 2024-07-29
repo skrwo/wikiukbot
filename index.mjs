@@ -50,7 +50,7 @@ composer.command("start", async (ctx) =>
 <blockquote><code>@${ctx.me.username} Ан-225 Мрія</code></blockquote>
 для пошуку сторінки про «Мрію»! Спробуйте, це зручно!
 
-📁 Переглянути початковий код бота: github.com/skrw/wikiukbot`,
+📁 Переглянути початковий код бота: github.com/skrwo/wikiukbot`,
     {
         parse_mode: "HTML",
         link_preview_options: { is_disabled: true },
