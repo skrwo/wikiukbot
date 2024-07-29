@@ -2,7 +2,7 @@
 
 A very simple project was made in a hour just because I did not find something for it.
 
-It is written in [Node.js](https://nodejs.org) (ESM, that is why .mjs file extension) using [grammY](https://grammy.dev) as a Telegram API client.
+It is written in [Node.js](https://nodejs.org) (ESM, that is why .mjs file extension) using [grammY](https://grammy.dev) as a Telegram Bot API client.
 
 ## Setup
 Firstly, you need to register your bot on Telegram, using [@BotFather](https://t.me/BotFather)
@@ -12,7 +12,7 @@ Firstly, you need to register your bot on Telegram, using [@BotFather](https://t
 >
 >(It does not work with [Deno](https://deno.com) due to `process.loadEnvFile()` and I have no clue if it works with [Bun](https://bun.sh), so let me know if it does)
 
-### 1. Setup the environment variables
+### 1. Set up the environment variables
 
 See [.env.example](./.env.example/) file. You can either fill .env file or set the actual environment variables
 
