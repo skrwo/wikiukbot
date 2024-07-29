@@ -1,9 +1,15 @@
 import { env, loadEnvFile } from "node:process"
+import { access } from "node:fs/promises"
 import { createServer } from "node:http"
 import { Bot, webhookCallback, InlineQueryResultBuilder } from "grammy"
 import { search, WikiError } from "./wiki.mjs"
 
-loadEnvFile()
+try {
+    await access(".env")
+    loadEnvFile()
+} catch {
+    console.log("no .env file found")
+}
 
 if (!env.TELEGRAM_TOKEN) throw new Error("Missing environment variable: `TELEGRAM_TOKEN`")
 
@@ -75,7 +81,10 @@ else {
     const callback = webhookCallback(bot, "http", {
         secretToken: env.WEBHOOK_SECRET_TOKEN
     })
-    const server = createServer(callback)
+    const server = createServer(async (req, res) => {
+        if (req.url.endsWith("/status")) return res.writeHead(200, "ok").end()
+        return await callback(req, res)
+    })
     server.listen(parseInt(env.PORT || 8443), "0.0.0.0", async () => 
         onStart(await bot.api.getMe())
     )
