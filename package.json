@@ -4,7 +4,7 @@
     "description": "A telegram bot to search the Ukrainian Wikipedia in inline mode",
     "main": "index.mjs",
     "scripts": {
-        "start": "node index.mjs"
+        "start": "node src/index.mjs"
     },
     "author": "Mykhailo Skrypnyk",
     "license": "BSD-3-Clause",
