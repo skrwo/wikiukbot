@@ -8,8 +8,6 @@ import { env } from "node:process"
 import { webhookCallback } from "grammy"
 import { bot } from "../bot.mjs"
 
-export const config = { runtime: "nodejs" }
-
 const callback = webhookCallback(bot, "std/http", {
     secretToken: env.WEBHOOK_SECRET_TOKEN
 })
