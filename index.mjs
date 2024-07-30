@@ -1,14 +1,13 @@
 import { env, loadEnvFile } from "node:process"
-import { access } from "node:fs/promises"
 import { createServer } from "node:http"
 import { Bot, webhookCallback, InlineQueryResultBuilder } from "grammy"
 import { search, WikiError } from "./wiki.mjs"
 
 try {
-    await access(".env")
     loadEnvFile()
-} catch {
-    console.log("no .env file found")
+} catch (e) {
+    if (e.code === "ENOENT") console.log("no .env file found")
+    else throw e
 }
 
 if (!env.TELEGRAM_TOKEN) throw new Error("Missing environment variable: `TELEGRAM_TOKEN`")
