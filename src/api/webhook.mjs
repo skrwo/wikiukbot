@@ -22,7 +22,7 @@ export async function POST(req) {
         return await callback(req)
     } catch (e) {
         // do not send 5xx responses
-        console.error("Failed to process webhook request:\n", e)
+        console.error("[!] Failed to process webhook request:\n", e)
         return new Response("Failed to process webhook request", { status: 200 })
     }
 }
