@@ -1,7 +1,7 @@
 import { env, loadEnvFile } from "node:process"
 import { createServer } from "node:http"
 import { Bot, webhookCallback, InlineQueryResultBuilder } from "grammy"
-import { search, WikiError } from "./wiki.mjs"
+import { getRandomArticleUrl, search, WikiError } from "./wiki.mjs"
 
 try {
     loadEnvFile()
@@ -12,7 +12,13 @@ try {
 
 if (!env.TELEGRAM_TOKEN) throw new Error("Missing environment variable: `TELEGRAM_TOKEN`")
 
-const bot = new Bot(env.TELEGRAM_TOKEN)
+const bot = new Bot(env.TELEGRAM_TOKEN, {
+    client: {
+        // Allow grammY to send 'answerInlineQuery' as webhook reply
+        // (we do not need a result of this method)
+        canUseWebhookReply: (method) => method === "answerInlineQuery"
+    }
+})
 
 // Use error boundary instead of bot.catch so it will work for both polling and webhook
 const composer = bot.errorBoundary(async (err) => {
@@ -24,14 +30,25 @@ const composer = bot.errorBoundary(async (err) => {
 
 composer.on("inline_query", async (ctx) => {
     const query = ctx.inlineQuery.query
-    if (!query) return await ctx.answerInlineQuery([], {
-        button: { text: "Введіть пошуковий запит!", start_parameter: "help" }
-    })
+
+    if (!query.trim()) {
+        const randomArticle = await getRandomArticleUrl()
+        return await ctx.answerInlineQuery([
+            InlineQueryResultBuilder
+                .article("random", "🎲 Випадкова стаття", {
+                    description: "Надіслати випадкову статтю української Вікіпедії!"
+                })
+                .text(randomArticle)
+        ], {
+            button: { text: "🔍 Пошук в Вікіпедії…", start_parameter: "help" },
+            cache_time: 0,
+        })
+    }
 
     const results = await search(query)
 
     const answer = results.map((r) =>
-        InlineQueryResultBuilder.article(r.pageid, r.title, {
+        InlineQueryResultBuilder.article(r.pageid.toString(), r.title, {
             description: r.description,
             thumbnail_url: r.thumbnail?.source,
             thumbnail_width: r.thumbnail?.width,
@@ -39,7 +56,7 @@ composer.on("inline_query", async (ctx) => {
         }).text(new URL(r.title, "https://uk.wikipedia.org/wiki/").toString())
     )
 
-    await ctx.answerInlineQuery(answer, { cache_time: 60, button: undefined })
+    await ctx.answerInlineQuery(answer, { button: undefined })
 })
 
 composer.command("start", async (ctx) => 
