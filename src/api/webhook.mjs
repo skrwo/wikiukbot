@@ -11,6 +11,7 @@ import { bot } from "../bot.mjs"
 const callback = webhookCallback(bot, "std/http", {
     secretToken: env.WEBHOOK_SECRET_TOKEN
 })
+
 /**
  * 
  * @param {Request} req 

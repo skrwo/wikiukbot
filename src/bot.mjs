@@ -19,6 +19,8 @@ export const bot = new Bot(env.TELEGRAM_TOKEN, {
     }
 })
 
+await bot.init()
+
 // Use error boundary instead of bot.catch so it will work for both polling and webhook
 const composer = bot.errorBoundary(async (err) => {
     const e = err.error
