@@ -13,10 +13,10 @@ const callback = webhookCallback(bot, "std/http", {
 })
 
 /**
- * 
  * @param {Request} req 
  */
 export async function POST(req) {
+    console.log(bot.token)
     try {
         return await callback(req)
     } catch (e) {
