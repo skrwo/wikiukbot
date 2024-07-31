@@ -1,5 +1,4 @@
-import { GrammyError } from "grammy"
-import { bot } from "./bot.mjs"
+import { GrammyError, Api } from "grammy"
 import { env } from "node:process"
 
 const webhookUrl = env.WEBHOOK_URL ?? (env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}/api/webhook` : undefined)
@@ -12,11 +11,14 @@ if (!webhookUrl) throw new Error("Missing environment variable: `WEBHOOK_URL`")
  */
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
+if (!env.TELEGRAM_TOKEN) throw new Error("Missing environment variable: `TELEGRAM_TOKEN`")
+const api = new Api(env.TELEGRAM_TOKEN)
+
 // i have no clue why vercel runs it twice but telegram doesnt like it
 // so we must respect ratelimits
 async function setWebhook() {
     try {
-        return await bot.api.setWebhook(webhookUrl, {
+        return await api.setWebhook(webhookUrl, {
             secret_token: env.WEBHOOK_SECRET_TOKEN,
             drop_pending_updates: !!env.DROP_PENDING_UPDATES,
         })
