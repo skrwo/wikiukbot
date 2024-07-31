@@ -34,27 +34,16 @@ Using Node.js with npm: `npm i`
 
 Using Node.js with npm: `npm run start`
 
-### Using Vercel serverless functions:
+### Deploy with Vercel serverless functions:
 
-#### 1. Set the build command
+#### 1. Select this github repository
 
-`npm run vercel-build`
+#### 2. Set the root directory to `src`
 
-#### 2. Set the output directory
-
-`.`
-
-#### 3. Set the install command
-
-`npm install`
-
-#### 4. Set the root directory
-
-`src`
-
-#### 5. Set the environment variables
+#### 3. Set the environment variables
 
 |Key|Value|
 |---|-----|
-|WEBHOOK_URL|https://your-project-name.vercel.app/api/webhook|
-|TELEGRAM_TOKEN|Your telegram bot token|
+|TELEGRAM_TOKEN|Your telegram bot token here|
+
+#### 4. Click "Deploy"
