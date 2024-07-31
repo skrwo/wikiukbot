@@ -28,9 +28,9 @@ const composer = bot.errorBoundary(async (err) => {
 })
 
 composer.on("inline_query", async (ctx) => {
-    const query = ctx.inlineQuery.query
+    const query = ctx.inlineQuery.query.trim()
 
-    if (!query.trim()) {
+    if (!query) {
         const randomArticle = await getRandomArticleUrl()
         return await ctx.answerInlineQuery([
             InlineQueryResultBuilder
@@ -55,7 +55,11 @@ composer.on("inline_query", async (ctx) => {
         }).text(new URL(r.title, "https://uk.wikipedia.org/wiki/").toString())
     )
 
-    await ctx.answerInlineQuery(answer, { button: undefined })
+    const button = answer.length
+        ? undefined
+        : { text: "⛔ Змініть пошуковий запит…", start_parameter: "help" }
+
+    await ctx.answerInlineQuery(answer, { button })
 })
 
 composer.command("start", async (ctx) => 

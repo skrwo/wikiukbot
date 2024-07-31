@@ -45,8 +45,9 @@ export async function search(query) {
     const body = await response.json()
 
     if ("error" in body) throw new WikiError(`API error: code='${body.code}', info='${body.info}'`)
-
-    return body.query.pages
+    
+    // body may not contain 'query' key if results are empty
+    return body.query?.pages ?? []
 }
 /**
  * @returns {Promise<string>} the random article URL
