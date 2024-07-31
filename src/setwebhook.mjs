@@ -2,7 +2,7 @@ import { GrammyError } from "grammy"
 import { bot } from "./bot.mjs"
 import { env } from "node:process"
 
-const webhookUrl = env.WEBHOOK_URL ?? (env.VERCEL_URL ? `https://${env.VERCEL_URL}/api/webhook` : undefined)
+const webhookUrl = env.WEBHOOK_URL ?? (env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}/api/webhook` : undefined)
 
 if (!webhookUrl) throw new Error("Missing environment variable: `WEBHOOK_URL`")
 
