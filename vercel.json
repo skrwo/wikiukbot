@@ -1,10 +1,4 @@
 {
-    "functions": {
-        "api/webhook.mjs": {
-            "memory": 1024,
-            "maxDuration": 10
-        }
-    },
     "env": {
         "TELEGRAM_TOKEN": "Paste your token here"
     },
