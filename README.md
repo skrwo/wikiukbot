@@ -36,14 +36,18 @@ Using Node.js with npm: `npm run start`
 
 ### Deploy with Vercel serverless functions:
 
-#### 1. Select this github repository
+#### 1. Select this github repository, clone it
 
-#### 2. Set the root directory to `src`
+Deployment will fail because vercel does not allow you to configure your project at this step
 
-#### 3. Set the environment variables
+#### 2. Go to project settings
+
+#### 3. Set the root directory to `src`
+
+#### 4. Set the environment variables
 
 |Key|Value|
 |---|-----|
 |TELEGRAM_TOKEN|Your telegram bot token here|
 
-#### 4. Click "Deploy"
+#### 5. Go to deployments & redeploy
