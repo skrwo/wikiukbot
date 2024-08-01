@@ -27,7 +27,7 @@ export async function search(query) {
         action: "query",
         format: "json",
         formatversion: 2,
-        prop: "pageprops|pageprops|pageimages|description",
+        prop: "pageprops|pageimages|description",
         generator: "prefixsearch",
         ppprop: "displaytitle",
         piprop: "thumbnail",
@@ -40,11 +40,13 @@ export async function search(query) {
     const response = await fetch(`https://uk.wikipedia.org/w/api.php?${params}`)
 
     // if the response status !== 200 we trow a WikiError with its status and status description
-    if (!response.ok) throw new WikiError(`HTTP error: ${response.status} ${response.statusText}`)
+    if (!response.ok)
+        throw new WikiError(`HTTP error: ${response.status} ${response.statusText}`)
     
     const body = await response.json()
 
-    if ("error" in body) throw new WikiError(`API error: code='${body.code}', info='${body.info}'`)
+    if ("error" in body)
+        throw new WikiError(`API error: code='${body.error.code}', info='${body.error.info}'`)
     
     // body may not contain 'query' key if results are empty
     return body.query?.pages ?? []
@@ -57,7 +59,8 @@ export async function getRandomArticleUrl() {
         redirect: "manual"
     })
 
-    if (response.status !== 302) throw new WikiError(`HTTP error: ${response.status} ${response.statusText}`)
+    if (response.status !== 302)
+        throw new WikiError(`HTTP error: ${response.status} ${response.statusText}`)
     
     // get the redirect location
     const article = response.headers.get("location")
