@@ -13,8 +13,8 @@ if (!env.TELEGRAM_TOKEN) throw new Error("Missing environment variable: `TELEGRA
 
 export const bot = new Bot(env.TELEGRAM_TOKEN, {
     client: {
-        // Allow grammY to send 'answerInlineQuery' as webhook reply
-        // (we do not need a result of this method)
+        // Allow grammY to send 'answerInlineQuery' and 'sendMesssage' methods
+        // as webhook replies (we do not need the results of these methods)
         canUseWebhookReply:
             (method) => ["answerInlineQuery", "sendMessage"].includes(method)
     }
