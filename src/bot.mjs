@@ -15,7 +15,8 @@ export const bot = new Bot(env.TELEGRAM_TOKEN, {
     client: {
         // Allow grammY to send 'answerInlineQuery' as webhook reply
         // (we do not need a result of this method)
-        canUseWebhookReply: (method) => method === "answerInlineQuery"
+        canUseWebhookReply:
+            (method) => ["answerInlineQuery", "sendMessage"].includes(method)
     }
 })
 
@@ -47,12 +48,17 @@ composer.on("inline_query", async (ctx) => {
     const results = await search(query)
 
     const answer = results.map((r) =>
-        InlineQueryResultBuilder.article(r.pageid.toString(), r.title, {
-            description: r.description,
-            thumbnail_url: r.thumbnail?.source,
-            thumbnail_width: r.thumbnail?.width,
-            thumbnail_height: r.thumbnail?.height,
-        }).text(new URL(r.title, "https://uk.wikipedia.org/wiki/").toString())
+        InlineQueryResultBuilder
+        .article(
+            r.pageid.toString(),
+            r.title,
+            {
+                description: r.description,
+                thumbnail_url: r.thumbnail?.source,
+                thumbnail_width: r.thumbnail?.width,
+                thumbnail_height: r.thumbnail?.height,
+            })
+        .text(new URL(r.title, "https://uk.wikipedia.org/wiki/").toString())
     )
 
     const button = answer.length
@@ -62,7 +68,7 @@ composer.on("inline_query", async (ctx) => {
     await ctx.answerInlineQuery(answer, { button })
 })
 
-composer.command("start", async (ctx) => 
+composer.command("start", ctx =>
     ctx.reply(`🔍 Хочете <b>швидко</b> надіслати співрозмовнику сторінку з <a href="https://uk.wikipedia.org/">Вікіпедії</a>?
 
 💕 Для цього не потрібно виходити з Telegram! Просто введіть у поле повідомлення:
