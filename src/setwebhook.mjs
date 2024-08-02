@@ -1,3 +1,7 @@
+/**
+ * @file A helper script for vercel serverless function
+ */
+
 import { GrammyError } from "grammy"
 import { env } from "node:process"
 import { bot } from "./bot.mjs"

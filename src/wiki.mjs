@@ -1,4 +1,8 @@
 /**
+ * @file Interacts with Wikipedia API
+ */
+
+/**
  * A dummy error class we will use to identify errors with API
  */
 export class WikiError extends Error {}
@@ -7,7 +11,7 @@ export class WikiError extends Error {}
  * Perform a wikipedia search with the given query. Returns an array of result objects
  * @param {string} query 
  * 
- * @returns {Promise<{
+ * @typedef {{
  *  pageid: number
  *  ns: number
  *  title: string
@@ -19,7 +23,11 @@ export class WikiError extends Error {}
  *  }
  *  description: string
  *  descriptionsource: string
- * }[]>} 
+ * }} WikiPage
+ * 
+ * @returns {Promise<WikiPage[]>} 
+ * 
+ * @throws {WikiError}
  */
 export async function search(query) {
 
@@ -49,10 +57,20 @@ export async function search(query) {
         throw new WikiError(`API error: code='${body.error.code}', info='${body.error.info}'`)
     
     // body may not contain 'query' key if results are empty
-    return body.query?.pages ?? []
+    /**
+     * @type {WikiPage[]}
+     */
+    const result = body.query?.pages ?? []
+
+    // sort results by 'index' property (lower first)
+    result.sort((a, b) => a.index - b.index)
+
+    return result
 }
+
 /**
  * @returns {Promise<string>} the random article URL
+ * @throws {WikiError}
  */
 export async function getRandomArticleUrl() {
     const response = await fetch("https://uk.wikipedia.org/wiki/Спеціальна:Випадкова_сторінка", {

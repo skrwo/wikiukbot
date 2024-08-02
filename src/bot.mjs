@@ -1,3 +1,7 @@
+/**
+ * @file This is where the bot's logic defined
+ */
+
 import { env, loadEnvFile } from "node:process"
 import { Bot, InlineQueryResultBuilder } from "grammy"
 import { getRandomArticleUrl, search, WikiError } from "./wiki.mjs"
@@ -68,7 +72,8 @@ composer.on("inline_query", async (ctx) => {
     await ctx.answerInlineQuery(answer, { button })
 })
 
-composer.command("start", ctx =>
+composer.chatType("private")
+    .command("start", ctx =>
     ctx.reply(`🔍 Хочете <b>швидко</b> надіслати співрозмовнику сторінку з <a href="https://uk.wikipedia.org/">Вікіпедії</a>?
 
 💕 Для цього не потрібно виходити з Telegram! Просто введіть у поле повідомлення:
@@ -88,9 +93,9 @@ composer.command("start", ctx =>
     })
 )
 
-composer.command("privacy",
-    ctx => ctx.reply(
-        `Цей бот не збирає жодної інформації.
+composer.chatType("private")
+    .command("privacy", ctx =>
+    ctx.reply(`Цей бот не збирає жодної інформації.
 Ваші запити хіба що можуть записуватися до журналів помилок, якщо вони виникатимуть`
     )
 )

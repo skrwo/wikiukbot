@@ -1,8 +1,7 @@
 /**
- * This module is vercel serverless function.
- * See: 
- * - https://grammy.dev/hosting/vercel;
- * - https://vercel.com/docs/functions/quickstart;
+ * @file This module is vercel serverless function.
+ * @see https://grammy.dev/hosting/vercel
+ * @see https://vercel.com/docs/functions/quickstart
  */
 import { env } from "node:process"
 import { webhookCallback } from "grammy"

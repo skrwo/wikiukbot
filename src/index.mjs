@@ -1,3 +1,7 @@
+/**
+ * @file This file runs the bot
+ */
+
 import { env } from "node:process"
 import { createServer } from "node:http"
 import { webhookCallback } from "grammy"
