@@ -8,9 +8,38 @@
 export class WikiError extends Error {}
 
 /**
+ * Calls the Wikipedia API with the given params
+ * @param {Record<string, string | number>} params
+ * @returns {Promise<any>}
+ * @throws {WikiError}
+ */
+async function callApi(params) {
+    const query = new URLSearchParams(params).toString()
+
+    const response = await fetch(`https://uk.wikipedia.org/w/api.php?${query}`)
+
+    // if the response status !== 200 we trow a WikiError with its status and status description
+    if (!response.ok) {
+        throw new WikiError(
+            `HTTP error: ${response.status} ${response.statusText}`,
+        )
+    }
+
+    const body = await response.json()
+
+    if ("error" in body) {
+        throw new WikiError(
+            `API error: code='${body.error.code}', info='${body.error.info}'`,
+        )
+    }
+
+    return body
+}
+
+/**
  * Perform a wikipedia search with the given query. Returns an array of result objects
- * @param {string} query 
- * 
+ * @param {string} query
+ *
  * @typedef {{
  *  pageid: number
  *  ns: number
@@ -24,14 +53,13 @@ export class WikiError extends Error {}
  *  description: string
  *  descriptionsource: string
  * }} WikiPage
- * 
- * @returns {Promise<WikiPage[]>} 
- * 
+ *
+ * @returns {Promise<WikiPage[]>}
+ *
  * @throws {WikiError}
  */
 export async function search(query) {
-
-    const params = new URLSearchParams({
+    const body = await callApi({
         action: "query",
         format: "json",
         formatversion: 2,
@@ -42,24 +70,13 @@ export async function search(query) {
         pithumbsize: 120,
         redirects: "",
         gpssearch: query,
-        gpslimit: 15
-    }).toString()
+        gpslimit: 15,
+    })
 
-    const response = await fetch(`https://uk.wikipedia.org/w/api.php?${params}`)
-
-    // if the response status !== 200 we trow a WikiError with its status and status description
-    if (!response.ok)
-        throw new WikiError(`HTTP error: ${response.status} ${response.statusText}`)
-    
-    const body = await response.json()
-
-    if ("error" in body)
-        throw new WikiError(`API error: code='${body.error.code}', info='${body.error.info}'`)
-    
-    // body may not contain 'query' key if results are empty
     /**
      * @type {WikiPage[]}
      */
+    // body may not contain the 'query' key if results are empty
     const result = body.query?.pages ?? []
 
     // sort results by 'index' property (lower first)
@@ -69,22 +86,28 @@ export async function search(query) {
 }
 
 /**
- * @returns {Promise<string>} the random article URL
+ * Get the random article from the Wikipedia API
+ *
+ * @typedef {{
+ *  id: number
+ *  ns: number
+ *  title: string
+ * }} RandomWikiPage
+ *
+ * @returns {Promise<RandomWikiPage>}
+ *
  * @throws {WikiError}
  */
-export async function getRandomArticleUrl() {
-    const response = await fetch("https://uk.wikipedia.org/wiki/Спеціальна:Випадкова_сторінка", {
-        redirect: "manual"
+export async function getRandomArticle() {
+    const body = await callApi({
+        action: "query",
+        list: "random",
+        format: "json",
+        formatversion: 2,
+        rnnamespace: 0,
     })
 
-    if (response.status !== 302)
-        throw new WikiError(`HTTP error: ${response.status} ${response.statusText}`)
-    
-    // get the redirect location
-    const article = response.headers.get("location")
+    const result = body.query.random[0]
 
-    if (!article || !(article.startsWith("https://uk.wikipedia.org/wiki/")))
-        throw new WikiError(`Wrong redirect location: ${article}`)
-
-    return article
+    return result
 }

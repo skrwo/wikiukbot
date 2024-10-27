@@ -16,7 +16,7 @@ if (env.DROP_PENDING_UPDATES) {
 if (!env.WEBHOOK_URL) bot.start({ onStart })
 else {
     const callback = webhookCallback(bot, "http", {
-        secretToken: env.WEBHOOK_SECRET_TOKEN
+        secretToken: env.WEBHOOK_SECRET_TOKEN,
     })
     const server = createServer(async (req, res) => {
         if (req.method === "POST") {
@@ -28,8 +28,10 @@ else {
         }
         return res.writeHead(200, "ok").end()
     })
-    server.listen(parseInt(env.PORT || 8443), "0.0.0.0", async () => 
-        onStart(await bot.api.getMe())
+    server.listen(
+        parseInt(env.PORT || 8443),
+        "0.0.0.0",
+        async () => onStart(await bot.api.getMe()),
     )
     await bot.api.setWebhook(env.WEBHOOK_URL, {
         secret_token: env.WEBHOOK_SECRET_TOKEN,
